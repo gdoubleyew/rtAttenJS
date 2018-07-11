@@ -1,0 +1,24 @@
+{
+  "name": "rtAttenJS",
+  "version": "1.0.0",
+  "description": "A JavaScript version of rtAttenPenn client using Electron and React",
+  "main": "electron.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/gdoubleyew/rtAttenJS",
+  "keywords": [
+    "RtAttenPenn",
+    "JavaScript",
+    "Electron",
+    "React",
+    "Client"
+  ],
+  "author": "Grant Wallace",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "electron": "^2.0.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  }
+}
