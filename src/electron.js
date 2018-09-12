@@ -1,23 +1,21 @@
-// Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
+// const {inspect} = require('util')
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+var mainWindow
+var settingsWindow
 
 function createWindow () {
-  // if (process.env.NODE_ENV === 'development') {
-    BrowserWindow.addDevToolsExtension("./react_dev_tools")
-  // }
+  BrowserWindow.addDevToolsExtension('./react_dev_tools')
 
-  // Create the browser window.
+  global.sharedObject = {
+    imgDir: ''
+  }
+
+  // Create the main browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow.loadFile('html/mainWindow.html')
 
-  // and load the main.html of the app.
-  mainWindow.loadFile('src/main.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -26,6 +24,11 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  settingsWindow = new BrowserWindow()
+  settingsWindow.loadFile('html/settingsWindow.html')
+  settingsWindow.webContents.openDevTools()
+  mainWindow.addTabbedWindow(settingsWindow)
 }
 
 // This method will be called when Electron has finished
@@ -48,6 +51,13 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+ipcMain.on('settingsChange', (event, message) => {
+  // JSON.stringify(event, null, 2)
+  // console.log(`message: ${message}, event: ${inspect(event)}`)
+  console.log('message: %j, event %j, dir %s', message, event, global.sharedObject.imgDir)
+  mainWindow.webContents.send('settingsChange', message)
 })
 
 // In this file you can include the rest of your app's specific main process

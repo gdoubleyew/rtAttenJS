@@ -1,0 +1,9 @@
+body {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+
+  color: #333;
+  font-family: 'Open Sans', sans-serif;
+  text-align: left;
+}
