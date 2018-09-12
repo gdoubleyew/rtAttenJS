@@ -1,14 +1,18 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
+const path = require('path')
 // const {inspect} = require('util')
 
 var mainWindow
 var settingsWindow
+var subjectWindow
+var subjectDisplayInterval
 
 function createWindow () {
   BrowserWindow.addDevToolsExtension('./react_dev_tools')
 
   global.sharedObject = {
-    imgDir: ''
+    mriImgDir: '',
+    subImgDir: '../images/female_happy',
   }
 
   // Create the main browser window.
@@ -25,10 +29,28 @@ function createWindow () {
     mainWindow = null
   })
 
+  // Create the settings window
   settingsWindow = new BrowserWindow()
   settingsWindow.loadFile('html/settingsWindow.html')
   settingsWindow.webContents.openDevTools()
   mainWindow.addTabbedWindow(settingsWindow)
+
+  // Create the subject display window
+  subjectWindow = new BrowserWindow({ width: 900, height: 600, x: 0, y: 0 })
+  subjectWindow.loadFile('html/subjectWindow.html')
+  subjectWindow.webContents.openDevTools()
+
+  console.log('start interval timer')
+  // show a different subject image every n seconds
+  let intervalMillisec = 1000
+  let imageNum = 0
+  subjectDisplayInterval = setInterval(() => {
+    imageName = path.join(global.sharedObject.subImgDir, String(imageNum + 1) + '.jpg')
+    console.log('show image %s', imageName)
+    subjectWindow.webContents.send('showSubjectImage', { subjectImage: imageName })
+    imageNum = (imageNum + 1) % 45
+  }, intervalMillisec)
+
 }
 
 // This method will be called when Electron has finished
@@ -56,7 +78,7 @@ app.on('activate', function () {
 ipcMain.on('settingsChange', (event, message) => {
   // JSON.stringify(event, null, 2)
   // console.log(`message: ${message}, event: ${inspect(event)}`)
-  console.log('message: %j, event %j, dir %s', message, event, global.sharedObject.imgDir)
+  console.log('message: %j, event %j, dir %s', message, event, global.sharedObject.mriImgDir)
   mainWindow.webContents.send('settingsChange', message)
 })
 

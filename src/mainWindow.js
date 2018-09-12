@@ -9,7 +9,9 @@ class StatusPane extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      imgDir: '',
+      mriImgDir: '',
+      subImgDir: '',
+
       files: [],
     }
   }
@@ -19,15 +21,15 @@ class StatusPane extends React.Component {
     ipcRenderer.on('settingsChange', (event, message) => {
       console.log('settingsChange: %j', message)
       // Object.assign(globalState, message)
-      if (message.imgDir != this.state.imgDir) {
+      if (message.mriImgDir != this.state.mriImgDir) {
         // read in the file names from the image directory
-        fs.readdir(message.imgDir, (err, files) => {
+        fs.readdir(message.mriImgDir, (err, files) => {
           if (err) {
             console.log(`readdir error: ${err}`)
-            // self.setState({ imgDir: message.imgDir })
+            // self.setState({ mriImgDir: message.mriImgDir })
             return
           }
-          self.setState({ imgDir: message.imgDir, files: files })
+          self.setState({ mriImgDir: message.mriImgDir, files: files })
         })
       }
     })
@@ -39,7 +41,8 @@ class StatusPane extends React.Component {
       elem('li', {key: idx}, file)
     )
     return elem('div', {}, 
-      elem('p', {}, `Files: ${this.state.imgDir}`),
+      elem('p', {}, `MRI Scans Directory: ${this.state.mriImgDir}`),
+      elem('p', {}, `Subject Feedback Image Directory: ${this.state.mriImgDir}`),
       elem('hr'),
       elem('ul', {}, fileList)
     )
