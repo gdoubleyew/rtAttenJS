@@ -7,3 +7,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   text-align: left;
 }
+
+fieldset.thin {
+  border: 1px groove;
+}

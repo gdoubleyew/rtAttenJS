@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 // const {inspect} = require('util')
 
@@ -7,16 +7,15 @@ var settingsWindow
 var subjectWindow
 var subjectDisplayInterval
 
-function createWindow () {
+function createWindow() {
   BrowserWindow.addDevToolsExtension('./react_dev_tools')
 
   global.sharedObject = {
-    mriImgDir: '',
-    subImgDir: '../images/female_happy',
+    config: ''
   }
 
   // Create the main browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({ width: 1600, height: 1000 })
   mainWindow.loadFile('html/mainWindow.html')
 
   mainWindow.webContents.openDevTools()
@@ -40,16 +39,16 @@ function createWindow () {
   subjectWindow.loadFile('html/subjectWindow.html')
   subjectWindow.webContents.openDevTools()
 
-  console.log('start interval timer')
-  // show a different subject image every n seconds
-  let intervalMillisec = 1000
-  let imageNum = 0
-  subjectDisplayInterval = setInterval(() => {
-    imageName = path.join(global.sharedObject.subImgDir, String(imageNum + 1) + '.jpg')
-    console.log('show image %s', imageName)
-    subjectWindow.webContents.send('showSubjectImage', { subjectImage: imageName })
-    imageNum = (imageNum + 1) % 45
-  }, intervalMillisec)
+  // console.log('start interval timer')
+  // // show a different subject image every n seconds
+  // let intervalMillisec = 1000
+  // let imageNum = 0
+  // subjectDisplayInterval = setInterval(() => {
+  //   imageName = path.join(global.sharedObject.subImgDir, String(imageNum + 1) + '.jpg')
+  //   console.log('show image %s', imageName)
+  //   subjectWindow.webContents.send('showSubjectImage', { subjectImage: imageName })
+  //   imageNum = (imageNum + 1) % 45
+  // }, intervalMillisec)
 
 }
 
@@ -78,7 +77,8 @@ app.on('activate', function () {
 ipcMain.on('settingsChange', (event, message) => {
   // JSON.stringify(event, null, 2)
   // console.log(`message: ${message}, event: ${inspect(event)}`)
-  console.log('message: %j, event %j, dir %s', message, event, global.sharedObject.mriImgDir)
+  // console.log('message: %j, event %j, dir %s', message, event, global.sharedObject.mriImgDir)
+  Object.assign(global.sharedObject, message)
   mainWindow.webContents.send('settingsChange', message)
 })
 

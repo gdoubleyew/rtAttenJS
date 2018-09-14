@@ -1,0 +1,24 @@
+[session]
+sessionId = "20180310T123000"
+subjectName = "0301181_rtAttenPenn"
+subjectNum = 7
+subjectDay = 1
+date = "2018-03-01"
+dataDir = "data/"
+imgDir = "data/img"
+
+[advanced]
+findNewestPatterns = true
+watchFilePattern = "*.dcm"
+dicomNamePattern = "001_0000{}_000{}.dcm"
+minExpectedDicomSize = 300000
+legacyRun1Phase2Mode = true
+retrieveServerFiles = false
+skipConfirmForReprocess = false
+enforceDeadlines = false
+calcClockSkewIters = 30
+sliceDim = 64
+cutoff = 200
+FWHM = 5
+runs = [1, 2, 3]
+scanNums = [11, 13, 15]
