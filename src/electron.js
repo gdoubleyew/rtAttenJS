@@ -11,7 +11,8 @@ function createWindow() {
   BrowserWindow.addDevToolsExtension('./react_dev_tools')
 
   global.sharedObject = {
-    config: ''
+    config: '',
+    subImgDir: '../images/female_happy/'
   }
 
   // Create the main browser window.

@@ -2,6 +2,7 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 const { remote, ipcRenderer } = require('electron')
 const fs = require('fs')
+const path = require('path')
 const _ = require('lodash')
 
 const elem = React.createElement
@@ -10,9 +11,10 @@ class StatusPane extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      config: '',
+      config: {imgDir: '/tmp/img'},
       runNum: '',
       scanNum: '',
+      files: [],
     }
 
     this.runNumOnChange = this.runNumOnChange.bind(this)
@@ -30,13 +32,17 @@ class StatusPane extends React.Component {
 
   runBttnOnClick(event) {
     // TODO: Watch the mriImgDir for new files created matching the run and scan numbers
-    console.log(`Run ${this.state.runNum}: Watch directory ${this.state.mriImgDir} for new scans`)
+    console.log(`Run ${this.state.runNum}: Watch directory ${this.state.config.imgDir} for new scans`)
+    fs.watch(this.state.config.imgDir, (eventType, filename) => {
+      console.log(`event ${eventType}, filename ${filename}`)
+      this.state.files.push(filename)
+      this.setState({ files: this.state.files })
+    })
   }
 
   componentDidMount() {
     // const self = this
     ipcRenderer.on('settingsChange', (event, message) => {
-      // var newState = Object.assign({}, this.state, message)
       if (!_.isEqual(this.state.config, message.config)) {
         console.log('state changed: %j', message)
         this.setState(message)
@@ -47,10 +53,11 @@ class StatusPane extends React.Component {
   }
 
   render() {
-    var fileList = []
+    const fileList = this.state.files.map((file, idx) =>
+      elem('li', { key: idx }, file)
+    )
     return elem('div', {},
-      elem('p', {}, `MRI Scans Directory: ${this.state.mriImgDir}`),
-      elem('p', {}, `Feedback Image Directory: ${this.state.subImgDir}`),
+      elem('p', {}, `MRI Scans Directory: ${this.state.config.imgDir}`),
       elem('hr'),
       elem('p', {}, 'Run #: ',
         elem('input', { value: this.state.runNum, onChange: this.runNumOnChange }),
@@ -60,7 +67,7 @@ class StatusPane extends React.Component {
       ),
       elem('button', { onClick: this.runBttnOnClick }, 'Run'),
       elem('hr'),
-      elem('ul', {}, fileList)
+      elem('ul', {}, fileList),
     )
   }
 }

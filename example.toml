@@ -5,7 +5,7 @@ subjectNum = 7
 subjectDay = 1
 date = "2018-03-01"
 dataDir = "data/"
-imgDir = "data/img"
+imgDir = "/tmp/img"
 
 [advanced]
 findNewestPatterns = true
